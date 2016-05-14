@@ -6,10 +6,10 @@ import android.os.Environment;
 import android.view.View;
 
 import com.google.gson.Gson;
-import com.okhttplibrary.okhttp.OkHttpUtils;
-import com.okhttplibrary.okhttp.callback.BitmapCallback;
-import com.okhttplibrary.okhttp.callback.FileCallBack;
-import com.okhttplibrary.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.BitmapCallback;
+import com.zhy.http.okhttp.callback.FileCallBack;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
 import java.util.HashMap;
