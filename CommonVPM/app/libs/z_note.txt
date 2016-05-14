@@ -1,0 +1,4 @@
+leakcanary.jar:检查内存泄露的库
+okhttputils-2_3_9.jar ：网络操作库
+gson-2.3.1.jar ：Json解析
+butterknife-6.1.0.jar :注解库
