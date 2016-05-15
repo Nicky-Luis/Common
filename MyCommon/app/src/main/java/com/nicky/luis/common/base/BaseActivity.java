@@ -4,17 +4,20 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.nicky.luis.common.app.CommonApp;
+import com.nicky.luis.common.manager.ActivityManager;
 import com.nicky.luis.common.widget.CustomConfirmDialog;
 import com.squareup.leakcanary.RefWatcher;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -25,35 +28,44 @@ public abstract class BaseActivity extends FragmentActivity implements IBaseView
     private ProgressDialog mProgressDialog;
     FragmentManager fragmentManager;
 
-    /**
-     * 初始化布局
-     */
-    public abstract void initContentView();
-
-    /**
-     * 初始化控件
-     */
-    public abstract void initView();
-
-    /**
-     * 初始化控制中心
-     */
-    public abstract void initPresenter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 隐藏标题栏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        initContentView();
-        //检测是否有内存泄露
-        RefWatcher refWatcher = CommonApp.getInstance().getRefWatcher(this);
-        refWatcher.watch(this);
-        // 初始化View注入
-        ButterKnife.inject(this);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        ActivityManager.getInstence().pushActivity(this);
+        int id = setLayoutId();
+        View v = null;
+        if (0 == id) {
+            new Exception(
+                    "Please return the layout id in setLayoutId method,as simple as R.layout.cr_news_fragment_layout")
+                    .printStackTrace();
+        } else {
+            // layout注入
+            v = LayoutInflater.from(this).inflate(setLayoutId(), null);
+            setContentView(v);
+            //检测是否有内存泄露
+            RefWatcher refWatcher = CommonApp.getInstance().getRefWatcher(this);
+            refWatcher.watch(this);
+            // 初始化View注入
+            ButterKnife.inject(this);
+            loadLayout(v);
+        }
         initPresenter();
-        initView();
+        setUpView();
     }
+
+    /**
+     * 重写方法设置layoutID
+     *
+     * @return
+     */
+    public abstract int setLayoutId();
+    protected abstract void loadLayout(View v);
+    protected abstract void setUpView();
+    public abstract void initPresenter();
 
     @Override
     public void finish() {
